@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dra. Bárbara Brandão - Nutrição Veterinária</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#eef2ee',
+                            DEFAULT: '#4d7c5b', // Verde oliva elegante
+                            dark: '#365a41',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #faf9f6; } 
+        /* Receipt style for diets */
+        .prescription-card {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: white;
+            border-left: 8px solid #4d7c5b;
+        }
+    </style>
+</head>
+<body class="text-stone-800 min-h-screen">
+
+    <!-- ========================================== -->
+    <!-- 1. LANDING PAGE VIEW -->
+    <!-- ========================================== -->
+    <div id="view-landing" class="min-h-screen flex flex-col bg-[#faf9f6]">
+        
+        <!-- Header Profissional -->
+        <header class="w-full bg-white shadow-sm border-b border-stone-200 sticky top-0 z-50">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center">
+                    <h1 class="font-serif font-bold text-xl sm:text-2xl text-stone-800 leading-none">Dra. Bárbara Brandão</h1>
+                </div>
+                <button onclick="app.showView('view-login')" class="bg-brand hover:bg-brand-dark text-white font-bold py-2.5 px-4 sm:px-6 rounded-xl transition-all shadow-md flex items-center gap-2 text-sm sm:text-base border border-brand-dark">
+                    <i class="fa-solid fa-user-circle text-lg"></i> <span class="hidden sm:inline">Área do Cliente</span><span class="sm:hidden">Entrar</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero Section (Corpo da Página) -->
+        <main class="flex-grow flex flex-col items-center justify-center p-6 w-full max-w-6xl mx-auto py-12 sm:py-20">
+            
+            <div class="text-center max-w-3xl mx-auto flex flex-col items-center">
+                
+                <!-- Banner Logo centralizado -->
+                <img src="logotipo.jpg" alt="Logo Dra. Bárbara Brandão" class="w-64 sm:w-80 md:w-96 h-auto object-cover rounded-full shadow-2xl border-4 border-white mb-8" onerror="this.src='https://placehold.co/400x400/4d7c5b/ffffff?text=Logo'">
+                
+                <!-- Título em destaque -->
+                <h2 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold text-brand mb-6 leading-tight uppercase tracking-wide">
+                    Nutrição Veterinária
+                </h2>
+                
+                <p class="text-stone-600 text-lg sm:text-xl mb-10 leading-relaxed max-w-2xl mx-auto">
+                    A alimentação natural e balanceada transforma a vida do seu melhor amigo. Ofereça saúde, previna doenças e garanta qualidade de vida através de planos nutricionais sob medida.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="app.showView('view-login')" class="bg-brand hover:bg-brand-dark text-white font-bold py-4 px-8 rounded-xl transition-all shadow-lg text-lg w-full sm:w-auto flex items-center justify-center gap-3">
+                        Acessar Minhas Dietas <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Benefícios -->
+            <div class="mt-20 sm:mt-24 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 w-full max-w-5xl mx-auto">
+                <div class="text-center bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <div class="w-16 h-16 bg-brand-light text-brand rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 transform rotate-3">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 text-xl mb-3">Saúde Preventiva</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">Uma dieta balanceada e feita com ingredientes reais fortalece o sistema imunológico e previne doenças ao longo da vida.</p>
+                </div>
+                
+                <div class="text-center bg-white p-8 rounded-3xl shadow-sm border border-stone-100 relative sm:-mt-6">
+                    <div class="w-16 h-16 bg-brand-light text-brand rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 transform -rotate-3">
+                        <i class="fa-solid fa-weight-scale"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 text-xl mb-3">Controle de Peso</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">Planos calculados com precisão para atingir e manter o peso ideal do seu pet, evitando a obesidade e problemas articulares.</p>
+                </div>
+                
+                <div class="text-center bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <div class="w-16 h-16 bg-brand-light text-brand rounded-2xl flex items-center justify-center text-3xl mx-auto mb-6 transform rotate-3">
+                        <i class="fa-solid fa-file-medical"></i>
+                    </div>
+                    <h3 class="font-bold text-stone-800 text-xl mb-3">Suporte Clínico</h3>
+                    <p class="text-stone-500 text-sm leading-relaxed">Dietas terapêuticas desenvolvidas especificamente para o tratamento de patologias crónicas, alergias e problemas renais.</p>
+                </div>
+            </div>
+            
+        </main>
+        
+        <!-- Footer Simples -->
+        <footer class="w-full text-center py-6 text-stone-400 text-sm border-t border-stone-200 bg-white">
+            <p>&copy; 2023 Dra. Bárbara Brandão - Nutrição Veterinária. Todos os direitos reservados.</p>
+        </footer>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. LOGIN PAGE VIEW (TEST MODE) -->
+    <!-- ========================================== -->
+    <div id="view-login" class="hidden min-h-screen flex flex-col items-center justify-center p-6 w-full">
+        
+        <div class="bg-white p-8 rounded-3xl shadow-xl w-full max-w-md relative border border-stone-100">
+            <button onclick="app.showView('view-landing')" class="absolute top-5 left-5 text-stone-400 hover:text-brand transition-colors" title="Voltar">
+                <i class="fa-solid fa-arrow-left text-xl"></i>
+            </button>
+            
+            <img src="logotipo.jpg" alt="Logo" class="h-24 w-24 mx-auto rounded-full object-cover shadow-md mb-6 border-2 border-brand-light" onerror="this.src='https://placehold.co/100x100/4d7c5b/ffffff?text=Logo'">
+            
+            <h2 class="text-2xl font-serif font-bold text-center text-stone-800 mb-2">Acesso ao Sistema</h2>
+            
+            <div class="bg-amber-50 border border-amber-200 text-amber-800 text-sm p-4 rounded-xl mb-8 text-center mt-4">
+                <p class="font-bold mb-1"><i class="fa-solid fa-flask text-amber-600 mr-2"></i> Modo de Teste Ativo</p>
+                <p>Nenhuma senha é necessária. Clique abaixo para entrar diretamente na área desejada.</p>
+            </div>
+
+            <div class="space-y-4">
+                <button onclick="app.showPinModal()" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-lock-open"></i> Entrar como Nutricionista
+                </button>
+                <button onclick="app.login('client')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-paw"></i> Entrar como Tutor
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. ADMIN VIEW (NUTRITIONIST) -->
+    <!-- ========================================== -->
+    <div id="view-admin" class="hidden min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-stone-200 sticky top-0 z-40">
+            <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logotipo.jpg" class="h-10 w-10 rounded-full object-cover shadow-sm border border-stone-100" onerror="this.src='https://placehold.co/50x50/4d7c5b/ffffff?text=Logo'">
+                    <span class="font-serif font-bold text-stone-800 hidden sm:block">Painel da Nutricionista</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-sm text-stone-500 font-medium"><i class="fa-solid fa-user-doctor mr-1"></i> Dra. Bárbara</span>
+                    <button onclick="app.logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors font-medium text-sm flex items-center gap-2">
+                        Sair <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow p-4 sm:p-6 max-w-5xl mx-auto w-full space-y-8">
+            <!-- Form Section -->
+            <section class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-stone-200">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 bg-brand-light text-brand rounded-full flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-file-signature"></i>
+                    </div>
+                    <h3 class="text-2xl font-serif font-bold text-stone-800">Nova Dieta</h3>
+                </div>
+
+                <form id="diet-form" onsubmit="app.saveDiet(event)" class="space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 bg-stone-50 p-5 rounded-xl border border-stone-200">
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1">Criar Código do Cliente *</label>
+                            <input type="text" id="admin-tutor-code" required placeholder="Ex: MARIA-THOR" class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none font-mono font-bold text-brand uppercase">
+                            <p class="text-xs text-stone-500 mt-1">Crie um código único e envie ao tutor para ele acessar a dieta.</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1">Nome do Pet *</label>
+                            <input type="text" id="admin-pet-name" required placeholder="Ex: Thor" class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1">Acompanhamento de peso</label>
+                            <div class="relative">
+                                <input type="number" step="0.01" id="admin-weight" placeholder="Ex: 15.5" class="w-full p-3 pr-10 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 font-medium">kg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Caderno de Dietas -->
+                    <div>
+                        <div class="flex justify-between items-center mb-3">
+                            <label class="block text-sm font-semibold text-stone-800 text-lg"><i class="fa-solid fa-bowl-food text-brand mr-2"></i>Caderno de Dietas (Ingredientes) *</label>
+                        </div>
+                        
+                        <div id="admin-ingredients-container" class="space-y-3 mb-3">
+                            <!-- Dynamic rows -->
+                        </div>
+                        
+                        <button type="button" onclick="app.addIngredientRow()" class="text-sm font-bold bg-brand-light text-brand px-4 py-2 rounded-lg hover:bg-stone-200 transition-colors w-full border border-brand border-dashed">
+                            <i class="fa-solid fa-plus mr-1"></i> Adicionar Alimento
+                        </button>
+                    </div>
+
+                    <!-- Textareas -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1"><i class="fa-solid fa-capsules text-stone-400 mr-2"></i>Suplementação</label>
+                            <textarea id="admin-supplements" rows="3" placeholder="Descreva suplementos e dosagens..." class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1"><i class="fa-solid fa-bone text-stone-400 mr-2"></i>Petiscos e Agrados</label>
+                            <textarea id="admin-snacks" rows="3" placeholder="Petiscos permitidos..." class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1"><i class="fa-solid fa-leaf text-stone-400 mr-2"></i>Temperos Autorizados</label>
+                            <textarea id="admin-spices" rows="3" placeholder="Ex: Salsinha, orégano..." class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-stone-700 mb-1"><i class="fa-solid fa-comment-medical text-stone-400 mr-2"></i>Recomendações Extra</label>
+                            <textarea id="admin-extras" rows="3" placeholder="Modo de preparo, cuidados..." class="w-full p-3 rounded-lg border border-stone-300 focus:ring-2 focus:ring-brand outline-none resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-stone-200 flex justify-end">
+                        <button type="submit" class="w-full sm:w-auto bg-brand hover:bg-brand-dark text-white font-bold py-4 px-10 rounded-xl transition-all shadow-lg text-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-check"></i> Salvar Prescrição
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Saved Diets List -->
+            <section>
+                <h3 class="text-xl font-serif font-bold text-stone-800 mb-4 border-b border-stone-200 pb-2">Dietas Cadastradas no Sistema</h3>
+                <div id="admin-diets-list" class="space-y-4">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. CLIENT VIEW (TUTOR) -->
+    <!-- ========================================== -->
+    <div id="view-tutor" class="hidden min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-brand text-white shadow-md sticky top-0 z-40">
+            <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="logotipo.jpg" class="h-10 w-10 rounded-full object-cover shadow-sm border border-white/30" onerror="this.src='https://placehold.co/50x50/4d7c5b/ffffff?text=Logo'">
+                    <span class="font-serif font-bold">Área do Tutor</span>
+                </div>
+                <button onclick="app.logout()" class="text-white hover:text-stone-200 p-2 rounded-lg transition-colors font-medium text-sm flex items-center gap-2">
+                    Sair <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="flex-grow p-4 sm:p-6 max-w-4xl mx-auto w-full flex flex-col items-center">
+            
+            <!-- Search Box -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-200 w-full mb-8 text-center">
+                <h3 class="text-xl font-serif font-bold text-stone-800 mb-2">Acessar Dieta do seu Pet</h3>
+                <p class="text-stone-500 text-sm mb-6">Cole o código fornecido pela Dra. Bárbara para visualizar o plano nutricional.</p>
+                
+                <div class="flex flex-col sm:flex-row max-w-md mx-auto gap-3">
+                    <input type="text" id="client-search-code" placeholder="Ex: UID-1234" class="flex-grow p-4 rounded-xl border border-stone-300 focus:ring-2 focus:ring-brand outline-none font-mono text-center sm:text-left shadow-inner uppercase">
+                    <button onclick="app.searchDiets()" class="bg-brand hover:bg-brand-dark text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 whitespace-nowrap">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Diets Display -->
+            <div id="client-diets-display" class="w-full space-y-8">
+                <!-- Empty state init -->
+                <div class="text-center text-stone-400 py-10">
+                    <i class="fa-solid fa-folder-open text-6xl mb-4 opacity-50"></i>
+                    <p>As dietas aparecerão aqui.</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. PIN MODAL (ADMIN ACCESS) -->
+    <!-- ========================================== -->
+    <div id="pin-modal" class="hidden fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 transition-opacity">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl relative">
+            <button onclick="app.closePinModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-600 transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-brand-light text-brand rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-bold text-stone-800">Acesso Restrito</h3>
+                <p class="text-stone-500 text-sm mt-1">Digite o código de acesso (6 dígitos)</p>
+            </div>
+            
+            <form onsubmit="app.verifyPin(event)" class="space-y-5">
+                <div>
+                    <input type="password" id="admin-pin-input" maxlength="6" class="w-full p-4 text-center tracking-[0.5em] text-2xl rounded-xl border border-stone-300 focus:ring-2 focus:ring-brand outline-none font-mono" placeholder="••••••" required autocomplete="off">
+                </div>
+                <button type="submit" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-xl transition-all shadow-md flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-unlock"></i> Confirmar Acesso
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
+    <script>
+        const app = {
+            DB_KEY: 'dra_barbara_diets_db',
+            views: ['view-landing', 'view-login', 'view-admin', 'view-tutor'],
+
+            // Core View Management - STRICT SEPARATION
+            showView: function(targetViewId) {
+                // Hide all views
+                this.views.forEach(viewId => {
+                    const el = document.getElementById(viewId);
+                    if (el) {
+                        el.classList.add('hidden');
+                    }
+                });
+                
+                // Show only the target view
+                const targetEl = document.getElementById(targetViewId);
+                if (targetEl) {
+                    targetEl.classList.remove('hidden');
+                }
+                
+                // Scroll to top when changing views
+                window.scrollTo(0, 0);
+            },
+
+            init: function() {
+                // Ensure starting on landing page
+                this.showView('view-landing');
+            },
+
+            showPinModal: function() {
+                const modal = document.getElementById('pin-modal');
+                const input = document.getElementById('admin-pin-input');
+                modal.classList.remove('hidden');
+                // Pequeno atraso para garantir que o modal foi renderizado antes de focar
+                setTimeout(() => input.focus(), 100); 
+            },
+
+            closePinModal: function() {
+                const modal = document.getElementById('pin-modal');
+                const input = document.getElementById('admin-pin-input');
+                modal.classList.add('hidden');
+                input.value = ''; // Limpa o input ao fechar
+            },
+
+            verifyPin: function(e) {
+                e.preventDefault();
+                const pin = document.getElementById('admin-pin-input').value;
+                
+                if (pin === '231296') {
+                    this.closePinModal();
+                    this.login('admin');
+                } else {
+                    alert('Código incorreto. Acesso negado.');
+                    document.getElementById('admin-pin-input').value = '';
+                    document.getElementById('admin-pin-input').focus();
+                }
+            },
+
+            login: function(role) {
+                if (role === 'admin') {
+                    this.showView('view-admin');
+                    this.renderAdminDiets();
+                    
+                    // Initialize form if empty
+                    if (document.getElementById('admin-ingredients-container').children.length === 0) {
+                        document.getElementById('admin-tutor-code').value = '';
+                        this.addIngredientRow();
+                    }
+                } else if (role === 'client') {
+                    this.showView('view-tutor');
+                    // clear search on entry
+                    document.getElementById('client-search-code').value = '';
+                    document.getElementById('client-diets-display').innerHTML = `
+                        <div class="text-center text-stone-400 py-10">
+                            <i class="fa-solid fa-folder-open text-6xl mb-4 opacity-50"></i>
+                            <p>As dietas aparecerão aqui.</p>
+                        </div>
+                    `;
+                }
+            },
+
+            logout: function() {
+                this.showView('view-landing');
+            },
+
+            // --- ADMIN LOGIC ---
+            addIngredientRow: function() {
+                const container = document.getElementById('admin-ingredients-container');
+                const rowId = 'ing-' + Date.now() + Math.floor(Math.random() * 100);
+                const html = `
+                    <div id="${rowId}" class="flex gap-2 items-center bg-white p-2 rounded-xl shadow-sm border border-stone-200 ingredient-row">
+                        <div class="flex-grow">
+                            <input type="text" placeholder="Nome do Alimento" class="w-full p-2.5 text-sm rounded-lg border border-stone-200 focus:border-brand outline-none ing-name" required>
+                        </div>
+                        <div class="w-28 relative">
+                            <input type="number" step="0.1" placeholder="Qtd" class="w-full p-2.5 pr-8 text-sm rounded-lg border border-stone-200 focus:border-brand outline-none ing-amount" required>
+                            <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-400 font-medium">g</span>
+                        </div>
+                        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-red-400 hover:text-red-600 bg-red-50 p-2.5 rounded-lg transition-colors" title="Remover">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            },
+
+            getSavedDiets: function() {
+                const data = localStorage.getItem(this.DB_KEY);
+                return data ? JSON.parse(data) : [];
+            },
+
+            saveDiet: function(e) {
+                e.preventDefault();
+                
+                const rows = document.querySelectorAll('.ingredient-row');
+                const ingredients = [];
+                rows.forEach(row => {
+                    const name = row.querySelector('.ing-name').value.trim();
+                    const amount = row.querySelector('.ing-amount').value.trim();
+                    if (name && amount) {
+                        ingredients.push({ name, amount });
+                    }
+                });
+
+                if (ingredients.length === 0) {
+                    alert('Por favor, adicione pelo menos um alimento no Caderno de Dietas.');
+                    return;
+                }
+
+                const diet = {
+                    id: Date.now().toString(),
+                    tutorCode: document.getElementById('admin-tutor-code').value.trim().toUpperCase(),
+                    petName: document.getElementById('admin-pet-name').value.trim(),
+                    weight: document.getElementById('admin-weight').value.trim(),
+                    ingredients: ingredients,
+                    supplements: document.getElementById('admin-supplements').value.trim(),
+                    snacks: document.getElementById('admin-snacks').value.trim(),
+                    spices: document.getElementById('admin-spices').value.trim(),
+                    extras: document.getElementById('admin-extras').value.trim(),
+                    date: new Date().toLocaleDateString('pt-BR')
+                };
+
+                const diets = this.getSavedDiets();
+                diets.push(diet);
+                localStorage.setItem(this.DB_KEY, JSON.stringify(diets));
+
+                e.target.reset();
+                document.getElementById('admin-ingredients-container').innerHTML = '';
+                this.addIngredientRow();
+                document.getElementById('admin-tutor-code').value = '';
+                this.renderAdminDiets();
+                
+                alert('Dieta salva com sucesso!');
+            },
+
+            deleteDiet: function(id) {
+                if(confirm('Tem certeza que deseja excluir esta dieta?')) {
+                    let diets = this.getSavedDiets();
+                    diets = diets.filter(d => d.id !== id);
+                    localStorage.setItem(this.DB_KEY, JSON.stringify(diets));
+                    this.renderAdminDiets();
+                }
+            },
+
+            renderAdminDiets: function() {
+                const diets = this.getSavedDiets();
+                const container = document.getElementById('admin-diets-list');
+                
+                if (diets.length === 0) {
+                    container.innerHTML = `<div class="p-6 bg-stone-50 rounded-xl text-center text-stone-500 border border-stone-200 border-dashed">Nenhuma dieta cadastrada ainda.</div>`;
+                    return;
+                }
+
+                container.innerHTML = [...diets].reverse().map(diet => `
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-brand-light text-brand text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">${diet.tutorCode}</span>
+                                <span class="text-stone-400 text-xs"><i class="fa-regular fa-calendar"></i> ${diet.date}</span>
+                            </div>
+                            <h4 class="font-bold text-stone-800 text-lg"><i class="fa-solid fa-dog text-brand mr-2"></i>${diet.petName}</h4>
+                            ${diet.weight ? `<p class="text-sm text-stone-600">Peso: ${diet.weight} kg</p>` : ''}
+                        </div>
+                        <button onclick="app.deleteDiet('${diet.id}')" class="text-red-500 hover:bg-red-50 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto">
+                            <i class="fa-solid fa-trash mr-1"></i> Apagar
+                        </button>
+                    </div>
+                `).join('');
+            },
+
+            // --- CLIENT LOGIC ---
+            searchDiets: function() {
+                const codeInput = document.getElementById('client-search-code').value.trim().toUpperCase();
+                const container = document.getElementById('client-diets-display');
+
+                if (!codeInput) {
+                    alert('Por favor, digite o código do tutor.');
+                    return;
+                }
+
+                const allDiets = this.getSavedDiets();
+                const myDiets = allDiets.filter(d => d.tutorCode === codeInput);
+
+                if (myDiets.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-red-50 text-red-600 p-6 rounded-2xl text-center border border-red-200">
+                            <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
+                            <p class="font-bold">Nenhuma dieta encontrada.</p>
+                            <p class="text-sm mt-1 text-red-500">Verifique se o código "${codeInput}" está correto e tente novamente.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = [...myDiets].reverse().map(diet => {
+                    const ingredientsList = diet.ingredients.map(ing => 
+                        `<div class="flex justify-between items-center py-2 border-b border-stone-100 last:border-0">
+                            <span class="text-stone-700 font-medium">${ing.name}</span>
+                            <span class="bg-brand/10 text-brand font-bold px-3 py-1 rounded-md text-sm">${ing.amount}g</span>
+                        </div>`
+                    ).join('');
+
+                    return `
+                    <div class="prescription-card p-6 sm:p-10 rounded-2xl shadow-lg relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 opacity-[0.03] text-[15rem] pointer-events-none text-brand">
+                            <i class="fa-solid fa-paw"></i>
+                        </div>
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end border-b-2 border-stone-200 pb-6 mb-6">
+                            <div>
+                                <h2 class="text-3xl font-serif font-bold text-stone-800">${diet.petName}</h2>
+                                <p class="text-stone-500 mt-1 uppercase tracking-widest text-sm font-semibold">Plano Nutricional</p>
+                            </div>
+                            <div class="mt-4 sm:mt-0 text-right">
+                                <p class="text-sm text-stone-500">Data: <strong class="text-stone-700">${diet.date}</strong></p>
+                                ${diet.weight ? `<p class="text-sm text-stone-500 mt-1">Acompanhamento: <strong class="text-stone-700">${diet.weight} kg</strong></p>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="mb-8 relative z-10">
+                            <h4 class="flex items-center gap-2 text-brand font-bold text-lg mb-4 uppercase tracking-wider">
+                                <i class="fa-solid fa-bowl-food"></i> Ingredientes da Dieta
+                            </h4>
+                            <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-stone-200 shadow-sm">
+                                ${ingredientsList}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
+                            ${diet.supplements ? `
+                                <div class="bg-blue-50/80 p-4 rounded-xl border border-blue-100">
+                                    <h5 class="text-blue-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-capsules"></i> Suplementação</h5>
+                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.supplements}</p>
+                                </div>
+                            ` : ''}
+                            ${diet.snacks ? `
+                                <div class="bg-amber-50/80 p-4 rounded-xl border border-amber-100">
+                                    <h5 class="text-amber-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bone"></i> Petiscos e Agrados</h5>
+                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.snacks}</p>
+                                </div>
+                            ` : ''}
+                            ${diet.spices ? `
+                                <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100">
+                                    <h5 class="text-emerald-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-leaf"></i> Temperos Autorizados</h5>
+                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.spices}</p>
+                                </div>
+                            ` : ''}
+                            ${diet.extras ? `
+                                <div class="bg-stone-100/80 p-4 rounded-xl border border-stone-200 sm:col-span-2">
+                                    <h5 class="text-stone-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-comment-medical"></i> Recomendações Extra</h5>
+                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.extras}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="mt-10 pt-6 border-t border-stone-200 text-center relative z-10">
+                            <p class="font-serif font-bold text-stone-800 text-lg">Dra. Bárbara Brandão</p>
+                            <p class="text-brand text-sm uppercase tracking-widest mt-1">Nutrição Veterinária</p>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            }
+        };
+
+        // Initialize App on load
+        window.addEventListener('DOMContentLoaded', () => app.init());
+    </script>
+</body>
+</html>
