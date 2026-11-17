@@ -488,7 +488,7 @@
                 }
             },
 
-            renderAdminDiets: async function() {
+renderAdminDiets: async function() {
                 const container = document.getElementById('admin-diets-list');
                 container.innerHTML = '<div class="text-center text-stone-500 p-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando do banco de dados...</div>';
                 
@@ -499,21 +499,36 @@
                     return;
                 }
 
-                container.innerHTML = diets.reverse().map(diet => `
+                container.innerHTML = diets.reverse().map(diet => {
+                    // Formatação amigável da data
+                    let dataFormatada = diet.date;
+                    try {
+                        if (diet.date.includes('T')) {
+                            dataFormatada = new Date(diet.date).toLocaleDateString('pt-BR');
+                        }
+                    } catch(e) {}
+
+                    // Tratamento do peso (caso a planilha tenha convertido para data acidentalmente)
+                    let pesoFormatado = diet.weight;
+                    if (diet.weight && String(diet.weight).includes('T')) {
+                       pesoFormatado = "N/A (Verificar Planilha)";
+                    }
+
+                    return `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
                                 <span class="bg-brand-light text-brand text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">${diet.tutorCode}</span>
-                                <span class="text-stone-400 text-xs"><i class="fa-regular fa-calendar"></i> ${diet.date}</span>
+                                <span class="text-stone-400 text-xs"><i class="fa-regular fa-calendar"></i> ${dataFormatada}</span>
                             </div>
                             <h4 class="font-bold text-stone-800 text-lg"><i class="fa-solid fa-dog text-brand mr-2"></i>${diet.petName}</h4>
-                            ${diet.weight ? `<p class="text-sm text-stone-600">Peso: ${diet.weight} kg</p>` : ''}
+                            ${pesoFormatado ? `<p class="text-sm text-stone-600">Peso: ${pesoFormatado} kg</p>` : ''}
                         </div>
                         <button onclick="app.deleteDiet('${diet.id}')" class="text-red-500 hover:bg-red-50 border border-red-100 px-4 py-2 rounded-lg text-sm font-medium transition-colors w-full sm:w-auto">
                             <i class="fa-solid fa-trash mr-1"></i> Apagar
                         </button>
                     </div>
-                `).join('');
+                `}).join('');
             },
 
             searchDiets: async function() {
@@ -545,6 +560,20 @@
                         </div>`
                     ).join('');
 
+                    // Formatação amigável da data para o cliente
+                    let dataFormatada = diet.date;
+                    try {
+                        if (diet.date.includes('T')) {
+                            dataFormatada = new Date(diet.date).toLocaleDateString('pt-BR');
+                        }
+                    } catch(e) {}
+                    
+                    // Tratamento do peso para o cliente
+                    let pesoFormatado = diet.weight;
+                    if (diet.weight && String(diet.weight).includes('T')) {
+                       pesoFormatado = "N/A (Verificar Planilha)";
+                    }
+
                     return `
                     <div class="prescription-card p-6 sm:p-10 rounded-2xl shadow-lg relative overflow-hidden mb-6">
                         <div class="absolute -right-10 -bottom-10 opacity-[0.03] text-[15rem] pointer-events-none text-brand">
@@ -556,8 +585,8 @@
                                 <p class="text-stone-500 mt-1 uppercase tracking-widest text-sm font-semibold">Plano Nutricional</p>
                             </div>
                             <div class="mt-4 sm:mt-0 text-right">
-                                <p class="text-sm text-stone-500">Data: <strong class="text-stone-700">${diet.date}</strong></p>
-                                ${diet.weight ? `<p class="text-sm text-stone-500 mt-1">Acompanhamento: <strong class="text-stone-700">${diet.weight} kg</strong></p>` : ''}
+                                <p class="text-sm text-stone-500">Data: <strong class="text-stone-700">${dataFormatada}</strong></p>
+                                ${pesoFormatado ? `<p class="text-sm text-stone-500 mt-1">Acompanhamento: <strong class="text-stone-700">${pesoFormatado} kg</strong></p>` : ''}
                             </div>
                         </div>
 
