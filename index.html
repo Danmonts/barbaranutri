@@ -336,61 +336,45 @@
     <!-- JAVASCRIPT LOGIC -->
     <!-- ========================================== -->
     <script>
+        // Link do seu banco de dados (Apps Script)
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyaVh3-RjhPL7dAf2MnT2DEnkdhHJfWZkKhdRjuCxqjHilhEtWa7TvEJl08ThtjEBs/exec";
+
         const app = {
-            DB_KEY: 'dra_barbara_diets_db',
             views: ['view-landing', 'view-login', 'view-admin', 'view-tutor'],
 
-            // Core View Management - STRICT SEPARATION
             showView: function(targetViewId) {
-                // Hide all views
                 this.views.forEach(viewId => {
                     const el = document.getElementById(viewId);
-                    if (el) {
-                        el.classList.add('hidden');
-                    }
+                    if (el) el.classList.add('hidden');
                 });
-                
-                // Show only the target view
                 const targetEl = document.getElementById(targetViewId);
-                if (targetEl) {
-                    targetEl.classList.remove('hidden');
-                }
-                
-                // Scroll to top when changing views
+                if (targetEl) targetEl.classList.remove('hidden');
                 window.scrollTo(0, 0);
             },
 
-            init: function() {
-                // Ensure starting on landing page
-                this.showView('view-landing');
-            },
+            init: function() { this.showView('view-landing'); },
 
             showPinModal: function() {
                 const modal = document.getElementById('pin-modal');
                 const input = document.getElementById('admin-pin-input');
                 modal.classList.remove('hidden');
-                // Pequeno atraso para garantir que o modal foi renderizado antes de focar
                 setTimeout(() => input.focus(), 100); 
             },
 
             closePinModal: function() {
-                const modal = document.getElementById('pin-modal');
-                const input = document.getElementById('admin-pin-input');
-                modal.classList.add('hidden');
-                input.value = ''; // Limpa o input ao fechar
+                document.getElementById('pin-modal').classList.add('hidden');
+                document.getElementById('admin-pin-input').value = '';
             },
 
             verifyPin: function(e) {
                 e.preventDefault();
-                const pin = document.getElementById('admin-pin-input').value;
-                
-                if (pin === '231296') {
+                // A senha para a Dra. Bárbara acessar a área dela
+                if (document.getElementById('admin-pin-input').value === '231296') {
                     this.closePinModal();
                     this.login('admin');
                 } else {
-                    alert('Código incorreto. Acesso negado.');
+                    alert('Código incorreto.');
                     document.getElementById('admin-pin-input').value = '';
-                    document.getElementById('admin-pin-input').focus();
                 }
             },
 
@@ -398,33 +382,25 @@
                 if (role === 'admin') {
                     this.showView('view-admin');
                     this.renderAdminDiets();
-                    
-                    // Initialize form if empty
                     if (document.getElementById('admin-ingredients-container').children.length === 0) {
-                        document.getElementById('admin-tutor-code').value = '';
                         this.addIngredientRow();
                     }
                 } else if (role === 'client') {
                     this.showView('view-tutor');
-                    // clear search on entry
                     document.getElementById('client-search-code').value = '';
                     document.getElementById('client-diets-display').innerHTML = `
                         <div class="text-center text-stone-400 py-10">
                             <i class="fa-solid fa-folder-open text-6xl mb-4 opacity-50"></i>
                             <p>As dietas aparecerão aqui.</p>
-                        </div>
-                    `;
+                        </div>`;
                 }
             },
 
-            logout: function() {
-                this.showView('view-landing');
-            },
+            logout: function() { this.showView('view-landing'); },
 
-            // --- ADMIN LOGIC ---
             addIngredientRow: function() {
                 const container = document.getElementById('admin-ingredients-container');
-                const rowId = 'ing-' + Date.now() + Math.floor(Math.random() * 100);
+                const rowId = 'ing-' + Date.now();
                 const html = `
                     <div id="${rowId}" class="flex gap-2 items-center bg-white p-2 rounded-xl shadow-sm border border-stone-200 ingredient-row">
                         <div class="flex-grow">
@@ -434,38 +410,37 @@
                             <input type="number" step="0.1" placeholder="Qtd" class="w-full p-2.5 pr-8 text-sm rounded-lg border border-stone-200 focus:border-brand outline-none ing-amount" required>
                             <span class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-stone-400 font-medium">g</span>
                         </div>
-                        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-red-400 hover:text-red-600 bg-red-50 p-2.5 rounded-lg transition-colors" title="Remover">
+                        <button type="button" onclick="document.getElementById('${rowId}').remove()" class="text-red-400 hover:text-red-600 bg-red-50 p-2.5 rounded-lg transition-colors">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
-                    </div>
-                `;
+                    </div>`;
                 container.insertAdjacentHTML('beforeend', html);
             },
 
-            getSavedDiets: function() {
-                const data = localStorage.getItem(this.DB_KEY);
-                return data ? JSON.parse(data) : [];
+            fetchDiets: async function() {
+                try {
+                    const response = await fetch(SCRIPT_URL);
+                    return await response.json();
+                } catch (e) {
+                    console.error("Erro ao buscar dietas:", e);
+                    return [];
+                }
             },
 
-            saveDiet: function(e) {
+            saveDiet: async function(e) {
                 e.preventDefault();
-                
                 const rows = document.querySelectorAll('.ingredient-row');
                 const ingredients = [];
                 rows.forEach(row => {
                     const name = row.querySelector('.ing-name').value.trim();
                     const amount = row.querySelector('.ing-amount').value.trim();
-                    if (name && amount) {
-                        ingredients.push({ name, amount });
-                    }
+                    if (name && amount) ingredients.push({ name, amount });
                 });
 
-                if (ingredients.length === 0) {
-                    alert('Por favor, adicione pelo menos um alimento no Caderno de Dietas.');
-                    return;
-                }
+                if (ingredients.length === 0) return alert('Adicione ao menos um alimento.');
 
                 const diet = {
+                    action: 'save',
                     id: Date.now().toString(),
                     tutorCode: document.getElementById('admin-tutor-code').value.trim().toUpperCase(),
                     petName: document.getElementById('admin-pet-name').value.trim(),
@@ -478,38 +453,53 @@
                     date: new Date().toLocaleDateString('pt-BR')
                 };
 
-                const diets = this.getSavedDiets();
-                diets.push(diet);
-                localStorage.setItem(this.DB_KEY, JSON.stringify(diets));
+                const btn = e.target.querySelector('button[type="submit"]');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Salvando...';
+                btn.disabled = true;
 
-                e.target.reset();
-                document.getElementById('admin-ingredients-container').innerHTML = '';
-                this.addIngredientRow();
-                document.getElementById('admin-tutor-code').value = '';
-                this.renderAdminDiets();
+                try {
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify(diet)
+                    });
+                    
+                    e.target.reset();
+                    document.getElementById('admin-ingredients-container').innerHTML = '';
+                    this.addIngredientRow();
+                    this.renderAdminDiets();
+                    alert('Dieta salva com sucesso na planilha!');
+                } catch (err) {
+                    alert('Erro ao salvar. Verifique o console.');
+                }
                 
-                alert('Dieta salva com sucesso!');
+                btn.innerHTML = originalText;
+                btn.disabled = false;
             },
 
-            deleteDiet: function(id) {
+            deleteDiet: async function(id) {
                 if(confirm('Tem certeza que deseja excluir esta dieta?')) {
-                    let diets = this.getSavedDiets();
-                    diets = diets.filter(d => d.id !== id);
-                    localStorage.setItem(this.DB_KEY, JSON.stringify(diets));
+                    document.getElementById('admin-diets-list').innerHTML = '<div class="text-center p-4">Excluindo...</div>';
+                    await fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'delete', id: id })
+                    });
                     this.renderAdminDiets();
                 }
             },
 
-            renderAdminDiets: function() {
-                const diets = this.getSavedDiets();
+            renderAdminDiets: async function() {
                 const container = document.getElementById('admin-diets-list');
+                container.innerHTML = '<div class="text-center text-stone-500 p-4"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Carregando do banco de dados...</div>';
+                
+                const diets = await this.fetchDiets();
                 
                 if (diets.length === 0) {
-                    container.innerHTML = `<div class="p-6 bg-stone-50 rounded-xl text-center text-stone-500 border border-stone-200 border-dashed">Nenhuma dieta cadastrada ainda.</div>`;
+                    container.innerHTML = `<div class="p-6 bg-stone-50 rounded-xl text-center text-stone-500 border border-stone-200 border-dashed">Nenhuma dieta cadastrada.</div>`;
                     return;
                 }
 
-                container.innerHTML = [...diets].reverse().map(diet => `
+                container.innerHTML = diets.reverse().map(diet => `
                     <div class="bg-white p-5 rounded-xl shadow-sm border border-stone-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
@@ -526,17 +516,15 @@
                 `).join('');
             },
 
-            // --- CLIENT LOGIC ---
-            searchDiets: function() {
+            searchDiets: async function() {
                 const codeInput = document.getElementById('client-search-code').value.trim().toUpperCase();
                 const container = document.getElementById('client-diets-display');
 
-                if (!codeInput) {
-                    alert('Por favor, digite o código do tutor.');
-                    return;
-                }
+                if (!codeInput) return alert('Por favor, digite o código do tutor.');
 
-                const allDiets = this.getSavedDiets();
+                container.innerHTML = '<div class="text-center text-stone-500 py-10"><i class="fa-solid fa-spinner fa-spin text-3xl mb-4"></i><p>Buscando plano nutricional...</p></div>';
+
+                const allDiets = await this.fetchDiets();
                 const myDiets = allDiets.filter(d => d.tutorCode === codeInput);
 
                 if (myDiets.length === 0) {
@@ -544,13 +532,12 @@
                         <div class="bg-red-50 text-red-600 p-6 rounded-2xl text-center border border-red-200">
                             <i class="fa-solid fa-circle-exclamation text-3xl mb-2"></i>
                             <p class="font-bold">Nenhuma dieta encontrada.</p>
-                            <p class="text-sm mt-1 text-red-500">Verifique se o código "${codeInput}" está correto e tente novamente.</p>
-                        </div>
-                    `;
+                            <p class="text-sm mt-1 text-red-500">Verifique se o código "${codeInput}" está correto.</p>
+                        </div>`;
                     return;
                 }
 
-                container.innerHTML = [...myDiets].reverse().map(diet => {
+                container.innerHTML = myDiets.reverse().map(diet => {
                     const ingredientsList = diet.ingredients.map(ing => 
                         `<div class="flex justify-between items-center py-2 border-b border-stone-100 last:border-0">
                             <span class="text-stone-700 font-medium">${ing.name}</span>
@@ -559,7 +546,7 @@
                     ).join('');
 
                     return `
-                    <div class="prescription-card p-6 sm:p-10 rounded-2xl shadow-lg relative overflow-hidden">
+                    <div class="prescription-card p-6 sm:p-10 rounded-2xl shadow-lg relative overflow-hidden mb-6">
                         <div class="absolute -right-10 -bottom-10 opacity-[0.03] text-[15rem] pointer-events-none text-brand">
                             <i class="fa-solid fa-paw"></i>
                         </div>
@@ -576,7 +563,7 @@
 
                         <div class="mb-8 relative z-10">
                             <h4 class="flex items-center gap-2 text-brand font-bold text-lg mb-4 uppercase tracking-wider">
-                                <i class="fa-solid fa-bowl-food"></i> Ingredientes da Dieta
+                                <i class="fa-solid fa-bowl-food"></i> Ingredientes
                             </h4>
                             <div class="bg-white/80 backdrop-blur-sm p-4 rounded-xl border border-stone-200 shadow-sm">
                                 ${ingredientsList}
@@ -584,43 +571,16 @@
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
-                            ${diet.supplements ? `
-                                <div class="bg-blue-50/80 p-4 rounded-xl border border-blue-100">
-                                    <h5 class="text-blue-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-capsules"></i> Suplementação</h5>
-                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.supplements}</p>
-                                </div>
-                            ` : ''}
-                            ${diet.snacks ? `
-                                <div class="bg-amber-50/80 p-4 rounded-xl border border-amber-100">
-                                    <h5 class="text-amber-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bone"></i> Petiscos e Agrados</h5>
-                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.snacks}</p>
-                                </div>
-                            ` : ''}
-                            ${diet.spices ? `
-                                <div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100">
-                                    <h5 class="text-emerald-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-leaf"></i> Temperos Autorizados</h5>
-                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.spices}</p>
-                                </div>
-                            ` : ''}
-                            ${diet.extras ? `
-                                <div class="bg-stone-100/80 p-4 rounded-xl border border-stone-200 sm:col-span-2">
-                                    <h5 class="text-stone-800 font-bold text-sm uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-comment-medical"></i> Recomendações Extra</h5>
-                                    <p class="text-stone-700 whitespace-pre-line text-sm">${diet.extras}</p>
-                                </div>
-                            ` : ''}
+                            ${diet.supplements ? `<div class="bg-blue-50/80 p-4 rounded-xl border border-blue-100"><h5 class="text-blue-800 font-bold text-sm uppercase mb-2"><i class="fa-solid fa-capsules"></i> Suplementação</h5><p class="text-stone-700 text-sm whitespace-pre-line">${diet.supplements}</p></div>` : ''}
+                            ${diet.snacks ? `<div class="bg-amber-50/80 p-4 rounded-xl border border-amber-100"><h5 class="text-amber-800 font-bold text-sm uppercase mb-2"><i class="fa-solid fa-bone"></i> Petiscos e Agrados</h5><p class="text-stone-700 text-sm whitespace-pre-line">${diet.snacks}</p></div>` : ''}
+                            ${diet.spices ? `<div class="bg-emerald-50/80 p-4 rounded-xl border border-emerald-100"><h5 class="text-emerald-800 font-bold text-sm uppercase mb-2"><i class="fa-solid fa-leaf"></i> Temperos</h5><p class="text-stone-700 text-sm whitespace-pre-line">${diet.spices}</p></div>` : ''}
+                            ${diet.extras ? `<div class="bg-stone-100/80 p-4 rounded-xl border border-stone-200 sm:col-span-2"><h5 class="text-stone-800 font-bold text-sm uppercase mb-2"><i class="fa-solid fa-comment-medical"></i> Recomendações Extra</h5><p class="text-stone-700 text-sm whitespace-pre-line">${diet.extras}</p></div>` : ''}
                         </div>
-
-                        <div class="mt-10 pt-6 border-t border-stone-200 text-center relative z-10">
-                            <p class="font-serif font-bold text-stone-800 text-lg">Dra. Bárbara Brandão</p>
-                            <p class="text-brand text-sm uppercase tracking-widest mt-1">Nutrição Veterinária</p>
-                        </div>
-                    </div>
-                    `;
+                    </div>`;
                 }).join('');
             }
         };
 
-        // Initialize App on load
         window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
 </body>
